@@ -1,0 +1,171 @@
+
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>شيشة تايم | Shisha Time - الفخامة في كل نفَس</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Tajawal', sans-serif; background-color: #1A0B2E; color: #fff; overflow-x: hidden; }
+        .gold-gradient { background: linear-gradient(135deg, #D4AF37 0%, #F2D06B 100%); }
+        .luxury-card { background: rgba(255, 255, 255, 0.05); backdrop-filter: blur(10px); border: 1px solid rgba(212, 175, 55, 0.2); }
+        .animate-smoke { animation: smoke 10s infinite linear; opacity: 0.2; }
+        @keyframes smoke { from { transform: translateY(0) rotate(0deg); } to { transform: translateY(-100vh) rotate(360deg); } }
+        .hidden { display: none; }
+    </style>
+</head>
+<body>
+
+    <div id="age-gate" class="fixed inset-0 z-[100] flex items-center justify-center bg-[#1A0B2E]">
+        <div class="absolute inset-0 animate-smoke flex justify-around">
+            <span class="text-9xl">💨</span><span class="text-9xl">💨</span>
+        </div>
+        <div class="luxury-card p-10 rounded-3xl text-center max-w-md mx-4 z-10">
+            <h1 class="text-4xl font-bold mb-4 text-[#D4AF37]">شيشة تايم</h1>
+            <p class="text-xl mb-8">هل عمرك أكثر من 21 سنة؟</p>
+            <button onclick="verifyAge()" class="w-full gold-gradient text-[#1A0B2E] font-bold py-4 rounded-xl mb-4 text-lg">نعم، أنا 21+</button>
+            <button onclick="window.location.href='https://google.com'" class="w-full bg-white/10 py-3 rounded-xl">لا، أنا أصغر</button>
+        </div>
+    </div>
+
+    <div id="main-content" class="hidden">
+        <header class="p-4 flex justify-between items-center sticky top-0 z-50 bg-[#1A0B2E]/80 backdrop-blur-md border-b border-gold/10">
+            <div class="text-2xl font-bold text-[#D4AF37]">شيشة تايم</div>
+            <button onclick="toggleCart()" class="relative p-2 bg-white/5 rounded-full">
+                🛒 <span id="cart-count" class="absolute -top-1 -right-1 bg-[#D4AF37] text-black text-xs rounded-full px-1.5 font-bold">0</span>
+            </button>
+        </header>
+
+        <div class="p-4">
+            <div class="h-48 gold-gradient rounded-3xl p-6 flex items-center justify-between overflow-hidden relative">
+                <div>
+                    <h2 class="text-2xl font-bold text-black">خصم الـ 100 ريال!</h2>
+                    <p class="text-black/80">اطلب الآن واحصل على توصيل مجاني</p>
+                </div>
+                <span class="text-7xl opacity-50">💨</span>
+            </div>
+        </div>
+
+        <div class="p-4 grid grid-cols-2 gap-4">
+            <div class="luxury-card p-6 rounded-2xl text-center cursor-pointer hover:border-[#D4AF37]" onclick="filterCategory('shisha')">
+                <span class="text-3xl block mb-2">💨</span>
+                <span class="font-bold">الشيش</span>
+            </div>
+            <div class="luxury-card p-6 rounded-2xl text-center cursor-pointer hover:border-[#D4AF37]" onclick="filterCategory('flavor')">
+                <span class="text-3xl block mb-2">🍇</span>
+                <span class="font-bold">النكهات</span>
+            </div>
+        </div>
+
+        <div id="products-list" class="p-4 grid grid-cols-1 md:grid-cols-2 gap-6 pb-24">
+            </div>
+
+        <button onclick="surpriseMe()" class="fixed bottom-24 left-4 z-40 w-16 h-16 gold-gradient rounded-full shadow-2xl flex items-center justify-center text-3xl animate-bounce">🎁</button>
+    </div>
+
+    <div id="cart-drawer" class="fixed inset-y-0 left-0 w-full md:w-96 bg-[#1A0B2E] z-[60] transform -translate-x-full transition-transform duration-300 p-6 border-r border-gold/20 overflow-y-auto">
+        <div class="flex justify-between items-center mb-8">
+            <h2 class="text-2xl font-bold text-[#D4AF37]">سلتك</h2>
+            <button onclick="toggleCart()" class="text-3xl">✕</button>
+        </div>
+        <div id="cart-items" class="space-y-4 mb-8">
+            </div>
+        <div class="border-t border-white/10 pt-4">
+            <div class="flex justify-between text-xl font-bold mb-6">
+                <span>الإجمالي:</span>
+                <span id="cart-total">0</span> ر.س
+            </div>
+            <input id="cust-name" type="text" placeholder="الاسم الكامل" class="w-full p-3 bg-white/5 rounded-xl mb-3 border border-white/10">
+            <input id="cust-phone" type="text" placeholder="رقم الجوال" class="w-full p-3 bg-white/5 rounded-xl mb-6 border border-white/10">
+            <button onclick="sendToTelegram()" class="w-full gold-gradient py-4 rounded-xl text-[#1A0B2E] font-bold">تأكيد الطلب (واتساب/تيليجرام)</button>
+        </div>
+    </div>
+
+    <script>
+        // بيانات المنتجات
+        const products = [
+            { id: 1, name: 'شيشة خليل مأمون ذهبية', price: 450, category: 'shisha', emoji: '💨' },
+            { id: 2, name: 'نكهة تفاحتين فاخر', price: 65, category: 'flavor', emoji: '🍎' },
+            { id: 3, name: 'نكهة عنب توت مكعبات', price: 70, category: 'flavor', emoji: '🍇' },
+            { id: 4, name: 'فحم طبيعي 1 كجم', price: 35, category: 'accessory', emoji: '🔥' }
+        ];
+
+        let cart = [];
+
+        function verifyAge() {
+            document.getElementById('age-gate').classList.add('hidden');
+            document.getElementById('main-content').classList.remove('hidden');
+            renderProducts();
+        }
+
+        function renderProducts() {
+            const list = document.getElementById('products-list');
+            list.innerHTML = products.map(p => `
+                <div class="luxury-card p-4 rounded-3xl flex items-center justify-between">
+                    <div class="flex items-center gap-4">
+                        <div class="w-16 h-16 bg-white/5 rounded-2xl flex items-center justify-center text-3xl">${p.emoji}</div>
+                        <div>
+                            <h3 class="font-bold">${p.name}</h3>
+                            <p class="text-[#D4AF37]">${p.price} ر.س</p>
+                        </div>
+                    </div>
+                    <button onclick="addToCart(${p.id})" class="bg-[#D4AF37] text-black w-10 h-10 rounded-full font-bold">+</button>
+                </div>
+            `).join('');
+        }
+
+        function addToCart(id) {
+            const product = products.find(p => p.id === id);
+            cart.push(product);
+            updateCart();
+        }
+
+        function updateCart() {
+            document.getElementById('cart-count').innerText = cart.length;
+            const cartItems = document.getElementById('cart-items');
+            cartItems.innerHTML = cart.map((item, index) => `
+                <div class="flex justify-between items-center bg-white/5 p-3 rounded-xl">
+                    <span>${item.name}</span>
+                    <div class="flex items-center gap-3">
+                        <span>${item.price} ر.س</span>
+                        <button onclick="removeItem(${index})" class="text-red-500">🗑️</button>
+                    </div>
+                </div>
+            `).join('');
+            const total = cart.reduce((sum, item) => sum + item.price, 0);
+            document.getElementById('cart-total').innerText = total;
+        }
+
+        function removeItem(index) {
+            cart.splice(index, 1);
+            updateCart();
+        }
+
+        function toggleCart() {
+            const drawer = document.getElementById('cart-drawer');
+            drawer.style.transform = drawer.style.transform === 'translateX(0%)' ? 'translateX(-100%)' : 'translateX(0%)';
+        }
+
+        function surpriseMe() {
+            const random = products[Math.floor(Math.random() * products.length)];
+            alert(`🎉 هديتنا لك: خصم خاص على ${random.name}! تم إضافته للسلة.`);
+            addToCart(random.id);
+        }
+
+        function sendToTelegram() {
+            const name = document.getElementById('cust-name').value;
+            const phone = document.getElementById('cust-phone').value;
+            if(!name || !phone) return alert('فضلاً أدخل بياناتك');
+
+            const orderText = cart.map(i => `- ${i.name}`).join('%0A');
+            const total = document.getElementById('cart-total').innerText;
+            const message = `طلب جديد من: ${name}%0Aالجوال: ${phone}%0Aالمنتجات:%0A${orderText}%0Aالإجمالي: ${total} ر.س`;
+            
+            // رابط التلغرام (أو الواتساب)
+            window.open(`https://wa.me/966500000000?text=${message}`, '_blank');
+        }
+    </script>
+</body>
+</html>
